@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { DateInput } from './date-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -102,13 +103,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="cc-date">Fecha</Label>
-              <Input
-                id="cc-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-              />
+              <DateInput value={date} onChange={setDate} required />
               
             </div>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { DateInput } from './date-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -62,8 +63,8 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
 
   const currentDate = new Date()
   const currentMonthIncomes = incomes.filter((inc) => {
-    const incDate = new Date(inc.date)
-    return incDate.getMonth() === currentDate.getMonth() && incDate.getFullYear() === currentDate.getFullYear()
+    const [y, m] = inc.date.split('-').map(Number)
+    return y === currentDate.getFullYear() && m - 1 === currentDate.getMonth()
   })
 
   const totalEfectivo = currentMonthIncomes.filter((inc) => inc.type === 'efectivo').reduce((sum, inc) => sum + inc.amount, 0)
@@ -83,7 +84,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="income-date">Fecha</Label>
-                <Input id="income-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                <DateInput value={date} onChange={setDate} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="income-amount">Monto ($)</Label>
@@ -157,7 +158,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
                   {editingId === income.id && editValues ? (
                     <div className="space-y-2">
                       <div className="grid gap-2 sm:grid-cols-2">
-                        <Input type="date" value={editValues.date} onChange={(e) => setEditValues({ ...editValues, date: e.target.value })} />
+                        <DateInput value={date} onChange={setDate} required />
                         <Input type="number" min="0" step="0.01" value={editValues.amount} onChange={(e) => setEditValues({ ...editValues, amount: e.target.value })} />
                       </div>
                       <Input type="text" value={editValues.concept} onChange={(e) => setEditValues({ ...editValues, concept: e.target.value })} />
