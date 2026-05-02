@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { DateInput } from './date-input'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -84,7 +83,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="income-date">Fecha</Label>
-                <DateInput value={date} onChange={setDate} required />
+                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="income-amount">Monto ($)</Label>
@@ -158,7 +157,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
                   {editingId === income.id && editValues ? (
                     <div className="space-y-2">
                       <div className="grid gap-2 sm:grid-cols-2">
-                        <DateInput value={date} onChange={setDate} required />
+                        <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
                         <Input type="number" min="0" step="0.01" value={editValues.amount} onChange={(e) => setEditValues({ ...editValues, amount: e.target.value })} />
                       </div>
                       <Input type="text" value={editValues.concept} onChange={(e) => setEditValues({ ...editValues, concept: e.target.value })} />
