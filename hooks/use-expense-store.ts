@@ -172,23 +172,27 @@ export function useExpenseStore() {
   // Utility functions
   const getCategoryById = (id: string) => categories.find((cat) => cat.id === id)
 
-  const getExpensesByMonth = (year: number, month: number) => {
-    const startDate = new Date(year, month, 1)
-    const endDate = new Date(year, month + 1, 0)
 
+  // Parse YYYY-MM-DD without timezone shift
+  const parseLocalDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-').map(Number)
+    return { year, month: month - 1, day }
+  }
+
+  const getExpensesByMonth = (year: number, month: number) => {
     const filteredCash = cashExpenses.filter((exp) => {
-      const date = new Date(exp.date)
-      return date >= startDate && date <= endDate
+      const d = parseLocalDate(exp.date)
+      return d.year === year && d.month === month
     })
 
     const filteredCredit = creditExpenses.filter((exp) => {
-      const date = new Date(exp.date)
-      return date >= startDate && date <= endDate
+      const d = parseLocalDate(exp.date)
+      return d.year === year && d.month === month
     })
 
     const filteredIncomes = incomes.filter((inc) => {
-      const date = new Date(inc.date)
-      return date >= startDate && date <= endDate
+      const d = parseLocalDate(inc.date)
+      return d.year === year && d.month === month
     })
 
     return { cashExpenses: filteredCash, creditExpenses: filteredCredit, incomes: filteredIncomes }
@@ -198,18 +202,18 @@ export function useExpenseStore() {
     const months = new Set<string>()
     
     cashExpenses.forEach((exp) => {
-      const date = new Date(exp.date)
-      months.add(`${date.getFullYear()}-${date.getMonth()}`)
+      const d = parseLocalDate(exp.date)
+      months.add(`${d.year}-${d.month}`)
     })
     
     creditExpenses.forEach((exp) => {
-      const date = new Date(exp.date)
-      months.add(`${date.getFullYear()}-${date.getMonth()}`)
+      const d = parseLocalDate(exp.date)
+      months.add(`${d.year}-${d.month}`)
     })
 
     incomes.forEach((inc) => {
-      const date = new Date(inc.date)
-      months.add(`${date.getFullYear()}-${date.getMonth()}`)
+      const d = parseLocalDate(inc.date)
+      months.add(`${d.year}-${d.month}`)
     })
 
     return Array.from(months)
