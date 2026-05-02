@@ -79,6 +79,10 @@ export function useExpenseStore() {
     setIncomes((prev) => prev.filter((inc) => inc.id !== id))
   }
 
+  const updateIncome = (id: string, updates: Partial<Omit<Income, 'id'>>) => {
+    setIncomes((prev) => prev.map((inc) => (inc.id === id ? { ...inc, ...updates } : inc)))
+  }
+
   // Cash Expense CRUD
   const addCashExpense = (expense: Omit<CashExpense, 'id'>) => {
     const newExpense: CashExpense = {
@@ -230,6 +234,7 @@ export function useExpenseStore() {
     deleteCategory,
     addIncome,
     deleteIncome,
+    updateIncome,
     addCashExpense,
     updateCashExpense,
     deleteCashExpense,

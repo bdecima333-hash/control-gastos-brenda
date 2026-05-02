@@ -154,6 +154,7 @@ export function ExpenseTracker() {
               incomes={store.incomes}
               onSubmit={store.addIncome}
               onDelete={store.deleteIncome}
+              onUpdate={store.updateIncome}
             />
           </TabsContent>
 
@@ -199,6 +200,8 @@ export function ExpenseTracker() {
               categories={store.categories}
               getExpensesByMonth={store.getExpensesByMonth}
               getAvailableMonths={store.getAvailableMonths}
+              onUpdateIncome={store.updateIncome}
+              onDeleteIncome={store.deleteIncome}
             />
           </TabsContent>
         </Tabs>
