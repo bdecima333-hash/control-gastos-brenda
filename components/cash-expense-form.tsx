@@ -1,5 +1,6 @@
 'use client'
 
+import { formatARS } from '@/lib/utils'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -84,7 +85,7 @@ export function CashExpenseForm({ categories, onSubmit }: CashExpenseFormProps) 
                 onChange={(e) => setDate(e.target.value)}
                 required
               />
-              <p className="text-xs text-muted-foreground">{formatDateDisplay(date)}</p>
+              
             </div>
 
             <div className="space-y-2">

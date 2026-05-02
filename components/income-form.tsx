@@ -95,7 +95,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete }: IncomeFormProps) {
                   onChange={(e) => setDate(e.target.value)}
                   required
                 />
-                <p className="text-xs text-muted-foreground">{formatDateDisplay(date)}</p>
+                
               </div>
 
               <div className="space-y-2">
@@ -160,7 +160,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete }: IncomeFormProps) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ingresos efectivo (este mes)</p>
-                <p className="text-2xl font-bold text-green-600">${totalEfectivo.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-green-600">${formatARS(totalEfectivo)}</p>
               </div>
             </div>
           </CardContent>
@@ -174,7 +174,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete }: IncomeFormProps) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ingresos débito (este mes)</p>
-                <p className="text-2xl font-bold text-blue-600">${totalDebito.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-blue-600">${formatARS(totalDebito)}</p>
               </div>
             </div>
           </CardContent>
@@ -216,7 +216,7 @@ export function IncomeForm({ incomes, onSubmit, onDelete }: IncomeFormProps) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                    <span className="font-semibold text-green-600">+${income.amount.toFixed(2)}</span>
+                    <span className="font-semibold text-green-600">+${formatARS(income.amount)}</span>
                     <Button
                       variant="ghost"
                       size="icon"

@@ -1,5 +1,6 @@
 'use client'
 
+import { formatARS } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Trash2, Receipt, CreditCard, Banknote, Info } from 'lucide-react'
@@ -63,7 +64,7 @@ export function ExpenseList({
         <CardTitle className="text-lg flex items-center justify-between">
           <span>{title}</span>
           <span className="text-sm font-normal text-muted-foreground">
-            Total: ${(cashTotal + creditTotal).toFixed(2)}
+            Total: ${formatARS((cashTotal + creditTotal))}
           </span>
         </CardTitle>
       </CardHeader>
@@ -112,7 +113,7 @@ export function ExpenseList({
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                    <span className="font-semibold">${expense.total.toFixed(2)}</span>
+                    <span className="font-semibold">${formatARS(expense.total)}</span>
                     {onDeleteCash && (
                       <Button
                         variant="ghost"
@@ -169,7 +170,7 @@ export function ExpenseList({
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                      <span className="font-semibold">${expense.installmentAmount.toFixed(2)}</span>
+                      <span className="font-semibold">${formatARS(expense.installmentAmount)}</span>
                       {onDeleteCredit && (
                         <Button
                           variant="ghost"

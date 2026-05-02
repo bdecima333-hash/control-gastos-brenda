@@ -1,5 +1,6 @@
 'use client'
 
+import { formatARS } from '@/lib/utils'
 import { useState, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -236,7 +237,7 @@ export function ExportDialog({
               </div>
               <div>
                 <span className="text-muted-foreground">Total:</span>{' '}
-                <span className="font-medium">${(cashTotal + creditTotal).toFixed(2)}</span>
+                <span className="font-medium">${formatARS((cashTotal + creditTotal))}</span>
               </div>
             </div>
           </div>

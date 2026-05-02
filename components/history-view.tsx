@@ -1,5 +1,6 @@
 'use client'
 
+import { formatARS } from '@/lib/utils'
 import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExpenseList } from './expense-list'
@@ -123,7 +124,7 @@ export function HistoryView({ categories, getExpensesByMonth, getAvailableMonths
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ingresos</p>
-                <p className="text-2xl font-bold text-green-600">${incomesTotal.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-green-600">${formatARS(incomesTotal)}</p>
               </div>
             </div>
           </CardContent>
@@ -137,7 +138,7 @@ export function HistoryView({ categories, getExpensesByMonth, getAvailableMonths
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Efectivo/débito</p>
-                <p className="text-2xl font-bold">${cashTotal.toFixed(2)}</p>
+                <p className="text-2xl font-bold">${formatARS(cashTotal)}</p>
               </div>
             </div>
           </CardContent>
@@ -151,7 +152,7 @@ export function HistoryView({ categories, getExpensesByMonth, getAvailableMonths
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Tarjeta crédito</p>
-                <p className="text-2xl font-bold">${creditTotal.toFixed(2)}</p>
+                <p className="text-2xl font-bold">${formatARS(creditTotal)}</p>
               </div>
             </div>
           </CardContent>
@@ -165,7 +166,7 @@ export function HistoryView({ categories, getExpensesByMonth, getAvailableMonths
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total gastos</p>
-                <p className="text-2xl font-bold">${grandTotal.toFixed(2)}</p>
+                <p className="text-2xl font-bold">${formatARS(grandTotal)}</p>
               </div>
             </div>
           </CardContent>

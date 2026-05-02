@@ -13,6 +13,7 @@ import { HistoryView } from './history-view'
 import { ExportDialog } from './export-dialog'
 import { useExpenseStore } from '@/hooks/use-expense-store'
 import { Receipt, CreditCard, Tags, Calendar, Download, Wallet, TrendingUp, Banknote } from 'lucide-react'
+import { formatARS } from '@/lib/utils'
 import type { TabType } from '@/lib/types'
 
 export function ExpenseTracker() {
@@ -68,7 +69,7 @@ export function ExpenseTracker() {
                   <div>
                     <p className="text-xs text-muted-foreground">Saldo efectivo</p>
                     <p className={`text-xl font-bold ${balances.efectivoBalance >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                      ${balances.efectivoBalance.toFixed(2)}
+                      ${formatARS(balances.efectivoBalance)}
                     </p>
                   </div>
                 </div>
@@ -84,7 +85,7 @@ export function ExpenseTracker() {
                   <div>
                     <p className="text-xs text-muted-foreground">Saldo débito</p>
                     <p className={`text-xl font-bold ${balances.debitoBalance >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
-                      ${balances.debitoBalance.toFixed(2)}
+                      ${formatARS(balances.debitoBalance)}
                     </p>
                   </div>
                 </div>
@@ -99,7 +100,7 @@ export function ExpenseTracker() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Gastos del mes</p>
-                    <p className="text-xl font-bold">${cashTotal.toFixed(2)}</p>
+                    <p className="text-xl font-bold">${formatARS(cashTotal)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -113,7 +114,7 @@ export function ExpenseTracker() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Tarjeta del mes</p>
-                    <p className="text-xl font-bold">${creditTotal.toFixed(2)}</p>
+                    <p className="text-xl font-bold">${formatARS(creditTotal)}</p>
                   </div>
                 </div>
               </CardContent>

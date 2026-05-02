@@ -1,5 +1,6 @@
 'use client'
 
+import { formatARS } from '@/lib/utils'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -51,7 +52,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
 
   // Calculate total from cuotas and monto por cuota
   const calculatedTotal = installments && installmentAmount 
-    ? (parseInt(installments) * parseFloat(installmentAmount)).toFixed(2)
+    ? formatARS(parseInt(installments) * parseFloat(installmentAmount))
     : '0.00'
 
   const handleInstallmentsChange = (value: string) => {
@@ -107,7 +108,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
                 onChange={(e) => setDate(e.target.value)}
                 required
               />
-              <p className="text-xs text-muted-foreground">{formatDateDisplay(date)}</p>
+              
             </div>
 
             <div className="space-y-2">
