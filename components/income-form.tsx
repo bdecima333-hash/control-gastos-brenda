@@ -35,6 +35,8 @@ function formatDateDisplay(dateString: string): string {
   return `${day}/${month}/${year}`
 }
 
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
 export function IncomeForm({ incomes, onSubmit, onDelete }: IncomeFormProps) {
   const [date, setDate] = useState(formatDateForInput(new Date()))
   const [amount, setAmount] = useState('')

@@ -1,6 +1,5 @@
 'use client'
 
-import { formatARS } from '@/lib/utils'
 import { useState, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -48,6 +47,8 @@ function getCardLabel(cardType: string): string {
   const card = CARD_TYPES.find(c => c.value === cardType)
   return card?.label || cardType
 }
+
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export function ExportDialog({
   open,

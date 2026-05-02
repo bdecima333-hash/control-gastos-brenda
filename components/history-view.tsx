@@ -1,6 +1,5 @@
 'use client'
 
-import { formatARS } from '@/lib/utils'
 import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ExpenseList } from './expense-list'
@@ -21,6 +20,8 @@ interface HistoryViewProps {
   }
   getAvailableMonths: () => { year: number; month: number }[]
 }
+
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export function HistoryView({ categories, getExpensesByMonth, getAvailableMonths }: HistoryViewProps) {
   const availableMonths = useMemo(() => getAvailableMonths(), [getAvailableMonths])

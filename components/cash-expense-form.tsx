@@ -1,6 +1,5 @@
 'use client'
 
-import { formatARS } from '@/lib/utils'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -38,6 +37,8 @@ function formatDateDisplay(dateString: string): string {
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
 }
+
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export function CashExpenseForm({ categories, onSubmit }: CashExpenseFormProps) {
   const [date, setDate] = useState(formatDateForInput(new Date()))

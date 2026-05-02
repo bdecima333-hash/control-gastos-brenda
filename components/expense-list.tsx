@@ -1,6 +1,5 @@
 'use client'
 
-import { formatARS } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Trash2, Receipt, CreditCard, Banknote, Info } from 'lucide-react'
@@ -35,6 +34,8 @@ function getCardLabel(cardType: string): string {
   const card = CARD_TYPES.find(c => c.value === cardType)
   return card?.label || cardType
 }
+
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export function ExpenseList({
   cashExpenses,

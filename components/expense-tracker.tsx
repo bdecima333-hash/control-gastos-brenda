@@ -13,8 +13,9 @@ import { HistoryView } from './history-view'
 import { ExportDialog } from './export-dialog'
 import { useExpenseStore } from '@/hooks/use-expense-store'
 import { Receipt, CreditCard, Tags, Calendar, Download, Wallet, TrendingUp, Banknote } from 'lucide-react'
-import { formatARS } from '@/lib/utils'
 import type { TabType } from '@/lib/types'
+
+const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 export function ExpenseTracker() {
   const [activeTab, setActiveTab] = useState<TabType>('ingresos')
