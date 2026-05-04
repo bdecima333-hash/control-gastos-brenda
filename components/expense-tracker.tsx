@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { CashExpenseForm } from './cash-expense-form'
 import { CreditExpenseForm } from './credit-expense-form'
 import { PendingInstallments } from './pending-installments'
+import { Dashboard } from './dashboard'
 import { IncomeForm } from './income-form'
 import { ExpenseList } from './expense-list'
 import { CategoryManager } from './category-manager'
@@ -197,6 +198,14 @@ export function ExpenseTracker() {
               onAdd={store.addCategory}
               onUpdate={store.updateCategory}
               onDelete={store.deleteCategory}
+            />
+          </TabsContent>
+
+          <TabsContent value="dashboard">
+            <Dashboard
+              categories={store.categories}
+              getExpensesByMonth={store.getExpensesByMonth}
+              getAvailableMonths={store.getAvailableMonths}
             />
           </TabsContent>
 

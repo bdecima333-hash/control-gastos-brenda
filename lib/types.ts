@@ -48,4 +48,4 @@ export interface Income {
   concept: string
 }
 
-export type TabType = 'ingresos' | 'gastos' | 'tarjeta' | 'categorias' | 'historial'
+export type TabType = 'ingresos' | 'gastos' | 'tarjeta' | 'categorias' | 'dashboard' | 'historial'
