@@ -35,7 +35,7 @@ export function ExpenseTracker() {
   const cashTotal = currentMonthExpenses.cashExpenses.reduce((sum, exp) => sum + exp.total, 0)
   const creditTotal = currentMonthExpenses.creditExpenses.reduce((sum, exp) => sum + exp.installmentAmount, 0)
 
-  const showBalanceCards = activeTab !== 'historial'
+  const showBalanceCards = activeTab !== 'historial' && activeTab !== 'dashboard'
 
   return (
     <div className="min-h-screen bg-background">
