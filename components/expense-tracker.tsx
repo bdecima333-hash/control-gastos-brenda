@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CashExpenseForm } from './cash-expense-form'
 import { CreditExpenseForm } from './credit-expense-form'
+import { PendingInstallments } from './pending-installments'
 import { IncomeForm } from './income-form'
 import { ExpenseList } from './expense-list'
 import { CategoryManager } from './category-manager'
@@ -183,6 +184,10 @@ export function ExpenseTracker() {
               onDeleteCredit={store.deleteCreditExpense}
               showCredit
               title="Gastos del mes (tarjeta de crédito)"
+            />
+            <PendingInstallments
+              creditExpenses={store.creditExpenses}
+              categories={store.categories}
             />
           </TabsContent>
 

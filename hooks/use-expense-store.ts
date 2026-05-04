@@ -130,14 +130,16 @@ export function useExpenseStore() {
   // Credit Expense CRUD
   const addCreditExpense = async (expense: {
     date: string; categoryId: string; concept: string; detail?: string
-    installments: number; installmentAmount: number; totalCost: number; cardType: CardType
+    installments: number; installmentAmount: number; totalCost: number; cardType: CardType; currentInstallment?: number
   }) => {
     const parentId = crypto.randomUUID()
     const startDate = new Date(expense.date + 'T12:00:00')
     const newExpenses: CreditExpense[] = []
     const rows = []
+    const startInstallment = (expense.currentInstallment || 1) - 1
+    const remainingInstallments = expense.installments - startInstallment
 
-    for (let i = 0; i < expense.installments; i++) {
+    for (let i = 0; i < remainingInstallments; i++) {
       const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, startDate.getDate())
       const dateStr = d.toISOString().split('T')[0]
       const id = i === 0 ? parentId : crypto.randomUUID()
@@ -146,7 +148,7 @@ export function useExpenseStore() {
         detail: expense.detail, installments: expense.installments, currentInstallment: i + 1,
         installmentAmount: expense.installmentAmount, totalCost: expense.totalCost,
         cardType: expense.cardType, parentId: i === 0 ? undefined : parentId,
-        isLastInstallment: i === expense.installments - 1
+        isLastInstallment: startInstallment + i + 1 === expense.installments
       }
       newExpenses.push(exp)
       rows.push({
@@ -154,7 +156,7 @@ export function useExpenseStore() {
         detail: expense.detail, installments: expense.installments, current_installment: i + 1,
         installment_amount: expense.installmentAmount, total_cost: expense.totalCost,
         card_type: expense.cardType, parent_id: i === 0 ? null : parentId,
-        is_last_installment: i === expense.installments - 1, amount: expense.installmentAmount
+        is_last_installment: startInstallment + i + 1 === expense.installments, amount: expense.installmentAmount
       })
     }
 

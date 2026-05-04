@@ -22,6 +22,7 @@ interface CreditExpenseFormProps {
     installmentAmount: number
     totalCost: number
     cardType: CardType
+    currentInstallment?: number
   }) => void
 }
 
@@ -47,6 +48,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
   const [installments, setInstallments] = useState('')
   const [installmentAmount, setInstallmentAmount] = useState('')
   const [cardType, setCardType] = useState<CardType | ''>('')
+  const [currentInstallment, setCurrentInstallment] = useState('1')
 
   // Calculate total from cuotas and monto por cuota
   const calculatedTotal = installments && installmentAmount 
@@ -77,6 +79,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
       installmentAmount: amount,
       totalCost: inst * amount,
       cardType,
+      currentInstallment: parseInt(currentInstallment) || 1,
     })
 
     setConcept('')
@@ -84,6 +87,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
     setInstallments('')
     setInstallmentAmount('')
     setCardType('')
+    setCurrentInstallment('1')
   }
 
   return (
@@ -165,7 +169,7 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
               <Label htmlFor="cc-installments">Cuotas</Label>
               <Input
@@ -177,6 +181,19 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
                 onChange={(e) => handleInstallmentsChange(e.target.value)}
                 placeholder="1"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cc-current">Cuota actual</Label>
+              <Input
+                id="cc-current"
+                type="number"
+                min="1"
+                step="1"
+                value={currentInstallment}
+                onChange={(e) => setCurrentInstallment(e.target.value)}
+                placeholder="1"
               />
             </div>
 
