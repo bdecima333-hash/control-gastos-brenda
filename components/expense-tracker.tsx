@@ -128,28 +128,28 @@ export function ExpenseTracker() {
 
       <main className="container mx-auto px-4 pb-6">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 h-auto shadow-md">
-            <TabsTrigger value="ingresos" className="flex flex-col sm:flex-row gap-1 py-2.5">
+          <TabsList className="grid w-full grid-cols-6 h-auto shadow-md gap-1 p-1">
+            <TabsTrigger value="ingresos" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Ingresos</span>
             </TabsTrigger>
-            <TabsTrigger value="gastos" className="flex flex-col sm:flex-row gap-1 py-2.5">
+            <TabsTrigger value="gastos" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Receipt className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Gastos</span>
             </TabsTrigger>
-            <TabsTrigger value="tarjeta" className="flex flex-col sm:flex-row gap-1 py-2.5">
+            <TabsTrigger value="tarjeta" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <CreditCard className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Tarjeta</span>
             </TabsTrigger>
-            <TabsTrigger value="categorias" className="flex flex-col sm:flex-row gap-1 py-2.5">
+            <TabsTrigger value="categorias" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Tags className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Categorías</span>
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="flex flex-col sm:flex-row gap-1 py-2.5">
+            <TabsTrigger value="dashboard" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <TrendingUp className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Dashboard</span>
             </TabsTrigger>
-            <TabsTrigger value="historial" className="flex flex-col sm:flex-row gap-1 py-2.5">
+            <TabsTrigger value="historial" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Calendar className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Historial</span>
             </TabsTrigger>
