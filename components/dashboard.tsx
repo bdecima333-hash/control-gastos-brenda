@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { TrendingUp, TrendingDown, Wallet, CreditCard } from 'lucide-react'
 import type { Category, CashExpense, CreditExpense, Income } from '@/lib/types'
 
@@ -54,6 +54,21 @@ export function Dashboard({ categories, getExpensesByMonth, getAvailableMonths }
 
     return Array.from(map.values()).sort((a, b) => b.value - a.value)
   }, [data, categories])
+
+  // Last 6 months bar chart data
+  const barData = useMemo(() => {
+    const result = []
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const y = d.getFullYear()
+      const m = d.getMonth()
+      const monthData = getExpensesByMonth(y, m)
+      const ingresos = monthData.incomes.reduce((s, inc) => s + inc.amount, 0)
+      const gastos = monthData.cashExpenses.reduce((s, e) => s + e.total, 0) + monthData.creditExpenses.reduce((s, e) => s + e.installmentAmount, 0)
+      result.push({ mes: MONTH_NAMES[m].slice(0,3), ingresos, gastos })
+    }
+    return result
+  }, [getExpensesByMonth])
 
   const monthOptions = useMemo(() => {
     const opts: { year: number; month: number }[] = []
@@ -216,6 +231,24 @@ export function Dashboard({ categories, getExpensesByMonth, getAvailableMonths }
           </CardContent>
         </Card>
       </div>
+      {/* Bar chart */}
+      <Card className="shadow-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Ingresos vs Gastos (últimos 6 meses)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={barData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} width={45} />
+              <Tooltip formatter={(v: number) => `$${v.toLocaleString('es-AR', { minimumFractionDigits: 0 })}`} />
+              <Bar dataKey="ingresos" name="Ingresos" fill="#22c55e" radius={[4,4,0,0]} />
+              <Bar dataKey="gastos" name="Gastos" fill="#f43f5e" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -126,34 +126,65 @@ export function ExpenseTracker() {
         </div>
       )}
 
-      <main className="container mx-auto px-4 pb-6">
+      <main className="container mx-auto px-4 pb-6 sm:pb-6 pb-20">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 h-auto shadow-md gap-1 p-1">
+          {/* Desktop tabs - hidden on mobile */}
+          <TabsList className="hidden sm:grid w-full grid-cols-6 h-auto shadow-md gap-1 p-1">
             <TabsTrigger value="ingresos" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <TrendingUp className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Ingresos</span>
+              <span className="text-sm">Ingresos</span>
             </TabsTrigger>
             <TabsTrigger value="gastos" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Receipt className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Gastos</span>
+              <span className="text-sm">Gastos</span>
             </TabsTrigger>
             <TabsTrigger value="tarjeta" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <CreditCard className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Tarjeta</span>
+              <span className="text-sm">Tarjeta</span>
             </TabsTrigger>
             <TabsTrigger value="categorias" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Tags className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Categorías</span>
+              <span className="text-sm">Categorías</span>
             </TabsTrigger>
             <TabsTrigger value="dashboard" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <TrendingUp className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Dashboard</span>
+              <span className="text-sm">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="historial" className="flex flex-row gap-1 py-1.5 px-1 text-xs rounded-md border border-border/50 bg-background/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Calendar className="h-4 w-4" />
-              <span className="text-xs sm:text-sm">Historial</span>
+              <span className="text-sm">Historial</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* Mobile bottom nav - hidden on desktop */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-background border-t border-border shadow-lg">
+            <TabsList className="grid w-full grid-cols-6 h-16 bg-transparent rounded-none p-0">
+              <TabsTrigger value="ingresos" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <TrendingUp className="h-5 w-5" />
+                <span className="text-[10px]">Ingresos</span>
+              </TabsTrigger>
+              <TabsTrigger value="gastos" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <Receipt className="h-5 w-5" />
+                <span className="text-[10px]">Gastos</span>
+              </TabsTrigger>
+              <TabsTrigger value="tarjeta" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <CreditCard className="h-5 w-5" />
+                <span className="text-[10px]">Tarjeta</span>
+              </TabsTrigger>
+              <TabsTrigger value="categorias" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <Tags className="h-5 w-5" />
+                <span className="text-[10px]">Categorías</span>
+              </TabsTrigger>
+              <TabsTrigger value="dashboard" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <Wallet className="h-5 w-5" />
+                <span className="text-[10px]">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger value="historial" className="flex flex-col gap-0.5 h-full rounded-none border-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none text-muted-foreground">
+                <Calendar className="h-5 w-5" />
+                <span className="text-[10px]">Historial</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="ingresos" className="space-y-6">
             <IncomeForm
@@ -173,6 +204,7 @@ export function ExpenseTracker() {
               cashExpenses={currentMonthExpenses.cashExpenses}
               categories={store.categories}
               onDeleteCash={store.deleteCashExpense}
+              onUpdateCash={store.updateCashExpense}
               title="Gastos del mes (efectivo/débito)"
             />
           </TabsContent>
