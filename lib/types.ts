@@ -46,6 +46,8 @@ export interface Income {
   amount: number
   type: 'efectivo' | 'debito'
   concept: string
+  amountUsd?: number
+  exchangeRate?: number
 }
 
 export type TabType = 'ingresos' | 'gastos' | 'tarjeta' | 'categorias' | 'dashboard' | 'historial'

@@ -35,15 +35,22 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
   const [amount, setAmount] = useState('')
   const [type, setType] = useState<'efectivo' | 'debito'>('debito')
   const [concept, setConcept] = useState('')
+  const [amountUsd, setAmountUsd] = useState('')
+  const [exchangeRate, setExchangeRate] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{ date: string; amount: string; type: 'efectivo' | 'debito'; concept: string } | null>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!amount || !concept) return
-    onSubmit({ date, amount: parseFloat(amount), type, concept })
+    const usd = amountUsd ? parseFloat(amountUsd) : undefined
+    const tc = exchangeRate ? parseFloat(exchangeRate) : undefined
+    const finalAmount = usd && tc ? usd * tc : parseFloat(amount)
+    onSubmit({ date, amount: finalAmount, type, concept, amountUsd: usd, exchangeRate: tc })
     setAmount('')
     setConcept('')
+    setAmountUsd('')
+    setExchangeRate('')
   }
 
   const startEdit = (income: Income) => {
@@ -107,6 +114,52 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
                 </div>
               </RadioGroup>
             </div>
+            {/* Optional USD conversion */}
+            <div className="rounded-xl border border-dashed border-border p-3 space-y-3 bg-muted/30">
+              <p className="text-xs font-medium text-muted-foreground">💵 Conversión USD (opcional)</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label htmlFor="income-usd" className="text-xs">Monto en USD</Label>
+                  <Input
+                    id="income-usd"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={amountUsd}
+                    onChange={(e) => {
+                      setAmountUsd(e.target.value)
+                      if (e.target.value && exchangeRate) {
+                        setAmount(String(parseFloat(e.target.value) * parseFloat(exchangeRate)))
+                      }
+                    }}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="income-tc" className="text-xs">Tipo de cambio ($ por USD)</Label>
+                  <Input
+                    id="income-tc"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={exchangeRate}
+                    onChange={(e) => {
+                      setExchangeRate(e.target.value)
+                      if (amountUsd && e.target.value) {
+                        setAmount(String(parseFloat(amountUsd) * parseFloat(e.target.value)))
+                      }
+                    }}
+                    placeholder="Ej: 1200"
+                  />
+                </div>
+              </div>
+              {amountUsd && exchangeRate && (
+                <p className="text-xs text-muted-foreground">
+                  Total calculado: <span className="font-semibold text-foreground">${(parseFloat(amountUsd) * parseFloat(exchangeRate)).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+                </p>
+              )}
+            </div>
+
             <Button type="submit" className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Agregar ingreso
@@ -179,6 +232,9 @@ export function IncomeForm({ incomes, onSubmit, onDelete, onUpdate }: IncomeForm
                         <div className="min-w-0 flex-1">
                           <p className="font-medium truncate">{income.concept}</p>
                           <p className="text-xs text-muted-foreground">{formatDateDisplay(income.date)} | {income.type === 'efectivo' ? 'Efectivo' : 'Débito'}</p>
+                          {income.amountUsd && income.exchangeRate && (
+                            <p className="text-xs text-muted-foreground">USD {income.amountUsd.toLocaleString('es-AR', { minimumFractionDigits: 2 })} · TC ${income.exchangeRate.toLocaleString('es-AR')}</p>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">

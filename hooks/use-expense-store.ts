@@ -46,7 +46,7 @@ export function useExpenseStore() {
         installmentAmount: r.installment_amount, totalCost: r.total_cost,
         cardType: r.card_type as CardType, parentId: r.parent_id, isLastInstallment: r.is_last_installment
       })))
-      if (inc) setIncomes(inc.map(r => ({ id: r.id, date: r.date, amount: r.amount, type: r.type as 'efectivo' | 'debito', concept: r.concept })))
+      if (inc) setIncomes(inc.map(r => ({ id: r.id, date: r.date, amount: r.amount, type: r.type as 'efectivo' | 'debito', concept: r.concept, amountUsd: r.amount_usd ?? undefined, exchangeRate: r.exchange_rate ?? undefined })))
       setLoading(false)
     }
     loadData()
@@ -88,7 +88,7 @@ export function useExpenseStore() {
   const addIncome = async (income: Omit<Income, 'id'>) => {
     const id = crypto.randomUUID()
     const newIncome = { ...income, id }
-    await supabase.from('incomes').insert({ id, date: income.date, amount: income.amount, type: income.type, concept: income.concept })
+    await supabase.from('incomes').insert({ id, date: income.date, amount: income.amount, type: income.type, concept: income.concept, amount_usd: income.amountUsd ?? null, exchange_rate: income.exchangeRate ?? null })
     setIncomes(prev => [...prev, newIncome])
   }
 
