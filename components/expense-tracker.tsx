@@ -145,6 +145,10 @@ export function ExpenseTracker() {
               <Tags className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Categorías</span>
             </TabsTrigger>
+            <TabsTrigger value="dashboard" className="flex flex-col sm:flex-row gap-1 py-2.5">
+              <TrendingUp className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Dashboard</span>
+            </TabsTrigger>
             <TabsTrigger value="historial" className="flex flex-col sm:flex-row gap-1 py-2.5">
               <Calendar className="h-4 w-4" />
               <span className="text-xs sm:text-sm">Historial</span>
