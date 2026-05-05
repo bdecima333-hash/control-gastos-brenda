@@ -23,31 +23,71 @@ export function PendingInstallments({ creditExpenses, categories }: PendingInsta
   const currentYear = now.getFullYear()
   const currentMonth = now.getMonth()
 
-  // Group future installments by month
-  const monthlyData = useMemo(() => {
-    const map = new Map<string, { year: number; month: number; total: number; items: CreditExpense[] }>()
+  // Group by purchase (parentId or own id), show one row per purchase
+  const purchases = useMemo(() => {
+    const map = new Map<string, {
+      concept: string
+      cardType: CardType
+      categoryId: string
+      installmentAmount: number
+      installments: number
+      currentInstallment: number
+      remainingCount: number
+      totalRemaining: number
+      nextDate: string
+    }>()
 
     creditExpenses.forEach(exp => {
       const [y, m] = exp.date.split('-').map(Number)
       const year = y
       const month = m - 1
+      const isFuture = year > currentYear || (year === currentYear && month >= currentMonth)
+      if (!isFuture) return
 
-      // Only include current month and future
-      if (year < currentYear || (year === currentYear && month < currentMonth)) return
+      const groupKey = exp.parentId || exp.id
 
-      const key = `${year}-${month}`
-      if (!map.has(key)) map.set(key, { year, month, total: 0, items: [] })
-      const entry = map.get(key)!
-      entry.total += exp.installmentAmount
-      entry.items.push(exp)
+      if (!map.has(groupKey)) {
+        map.set(groupKey, {
+          concept: exp.concept,
+          cardType: exp.cardType,
+          categoryId: exp.categoryId,
+          installmentAmount: exp.installmentAmount,
+          installments: exp.installments,
+          currentInstallment: exp.currentInstallment,
+          remainingCount: 0,
+          totalRemaining: 0,
+          nextDate: exp.date,
+        })
+      }
+      const entry = map.get(groupKey)!
+      entry.remainingCount++
+      entry.totalRemaining += exp.installmentAmount
+      // track earliest (current) installment
+      if (exp.currentInstallment < entry.currentInstallment) {
+        entry.currentInstallment = exp.currentInstallment
+        entry.nextDate = exp.date
+      }
     })
 
-    return Array.from(map.values()).sort((a, b) => 
-      a.year !== b.year ? a.year - b.year : a.month - b.month
-    )
+    return Array.from(map.values()).sort((a, b) => a.nextDate.localeCompare(b.nextDate))
   }, [creditExpenses, currentYear, currentMonth])
 
-  if (monthlyData.length === 0) {
+  // Monthly total
+  const monthlyTotals = useMemo(() => {
+    const map = new Map<string, number>()
+    creditExpenses.forEach(exp => {
+      const [y, m] = exp.date.split('-').map(Number)
+      const year = y; const month = m - 1
+      if (year < currentYear || (year === currentYear && month < currentMonth)) return
+      const key = `${year}-${month}`
+      map.set(key, (map.get(key) || 0) + exp.installmentAmount)
+    })
+    return Array.from(map.entries())
+      .map(([k, total]) => { const [y, m] = k.split('-').map(Number); return { year: y, month: m, total } })
+      .sort((a, b) => a.year !== b.year ? a.year - b.year : a.month - b.month)
+  }, [creditExpenses, currentYear, currentMonth])
+
+  if (purchases.length === 0) {
     return (
       <Card className="shadow-md">
         <CardHeader className="pb-4">
@@ -64,40 +104,61 @@ export function PendingInstallments({ creditExpenses, categories }: PendingInsta
   }
 
   return (
-    <Card className="shadow-md">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
-          Cuotas pendientes
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {monthlyData.map(({ year, month, total, items }) => (
-          <div key={`${year}-${month}`} className="rounded-xl border overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2 bg-muted/50">
-              <span className="font-semibold text-sm">{MONTH_NAMES[month]} {year}</span>
+    <div className="space-y-4">
+      {/* Summary per purchase */}
+      <Card className="shadow-md">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            Compras en cuotas
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {purchases.map((p, i) => {
+            const cat = categories.find(c => c.id === p.categoryId)
+            return (
+              <div key={i} className="rounded-xl border bg-card p-3 space-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    {cat && <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />}
+                    <p className="font-medium truncate">{p.concept}</p>
+                  </div>
+                  <span className="text-sm font-semibold ml-2 flex-shrink-0">${formatARS(p.installmentAmount)}/mes</span>
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{getCardLabel(p.cardType)} · cuota {p.currentInstallment}/{p.installments} · {p.remainingCount} restantes</span>
+                  <span className="font-medium text-foreground">Total: ${formatARS(p.totalRemaining)}</span>
+                </div>
+                {/* Progress bar */}
+                <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all"
+                    style={{ width: `${((p.currentInstallment - 1) / p.installments) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )
+          })}
+        </CardContent>
+      </Card>
+
+      {/* Monthly totals */}
+      <Card className="shadow-md">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Total por mes
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {monthlyTotals.map(({ year, month, total }) => (
+            <div key={`${year}-${month}`} className="flex items-center justify-between px-3 py-2 rounded-lg bg-muted/50">
+              <span className="text-sm font-medium">{MONTH_NAMES[month]} {year}</span>
               <span className="font-bold text-primary">${formatARS(total)}</span>
             </div>
-            <div className="divide-y">
-              {items.map(exp => {
-                const cat = categories.find(c => c.id === exp.categoryId)
-                return (
-                  <div key={exp.id} className="flex items-center justify-between px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
-                      {cat && <div className="h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />}
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{exp.concept}</p>
-                        <p className="text-xs text-muted-foreground">{getCardLabel(exp.cardType)} · cuota {exp.currentInstallment}/{exp.installments}</p>
-                      </div>
-                    </div>
-                    <span className="ml-2 flex-shrink-0 font-medium">${formatARS(exp.installmentAmount)}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
   )
 }
