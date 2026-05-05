@@ -219,6 +219,7 @@ export function ExpenseTracker() {
               creditExpenses={currentMonthExpenses.creditExpenses}
               categories={store.categories}
               onDeleteCredit={store.deleteCreditExpense}
+              onUpdateCredit={store.updateCreditExpense}
               showCredit
               title="Gastos del mes (tarjeta de crédito)"
             />

@@ -18,6 +18,7 @@ interface ExpenseListProps {
   onDeleteCash?: (id: string) => void
   onDeleteCredit?: (id: string) => void
   onUpdateCash?: (id: string, updates: Partial<Omit<CashExpense, 'id'>>) => void
+  onUpdateCredit?: (id: string, updates: Partial<Omit<CreditExpense, 'id'>>) => void
   showCredit?: boolean
   title: string
 }
@@ -39,6 +40,8 @@ export function ExpenseList({
 }: ExpenseListProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{ date: string; concept: string; total: string; categoryId: string; paymentType: 'efectivo' | 'debito' } | null>(null)
+  const [editCreditId, setEditCreditId] = useState<string | null>(null)
+  const [editCreditValues, setEditCreditValues] = useState<{ concept: string; categoryId: string } | null>(null)
 
   const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || 'Sin categoría'
   const getCategoryColor = (id: string) => categories.find(c => c.id === id)?.color || '#9ca3af'
@@ -59,6 +62,20 @@ export function ExpenseList({
   }
 
   const cancelEdit = () => { setEditingId(null); setEditValues(null) }
+
+  const startCreditEdit = (exp: CreditExpense) => {
+    setEditCreditId(exp.id)
+    setEditCreditValues({ concept: exp.concept, categoryId: exp.categoryId })
+  }
+
+  const saveCreditEdit = (id: string) => {
+    if (!editCreditValues || !onUpdateCredit) return
+    onUpdateCredit(id, { concept: editCreditValues.concept, categoryId: editCreditValues.categoryId })
+    setEditCreditId(null)
+    setEditCreditValues(null)
+  }
+
+  const cancelCreditEdit = () => { setEditCreditId(null); setEditCreditValues(null) }
 
   return (
     <Card className="shadow-md">
@@ -160,30 +177,64 @@ export function ExpenseList({
               ))}
 
               {showCredit && creditExpenses.map((expense) => (
-                <div key={expense.id} className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${expense.isLastInstallment ? 'bg-[#FFF9C4] border-yellow-300 hover:bg-yellow-100' : 'bg-card hover:bg-accent/50'}`}>
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="p-1.5 rounded-lg bg-purple-100"><CreditCard className="h-4 w-4 text-purple-600" /></div>
-                    <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: getCategoryColor(expense.categoryId) }} />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium truncate">{expense.concept}</p>
-                        <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-primary/10 text-primary flex-shrink-0">Cuota {expense.currentInstallment}/{expense.installments}</span>
-                        {expense.detail && (
-                          <Tooltip>
-                            <TooltipTrigger asChild><Info className="h-3.5 w-3.5 text-muted-foreground cursor-help flex-shrink-0" /></TooltipTrigger>
-                            <TooltipContent className="max-w-xs"><p>{expense.detail}</p></TooltipContent>
-                          </Tooltip>
+                <div key={expense.id} className={`rounded-xl border p-3 transition-colors ${expense.isLastInstallment ? 'bg-[#FFF9C4] border-yellow-300' : 'bg-card'}`}>
+                  {editCreditId === expense.id && editCreditValues ? (
+                    <div className="space-y-2">
+                      <div>
+                        <Label className="text-xs">Concepto</Label>
+                        <Input value={editCreditValues.concept} onChange={e => setEditCreditValues({...editCreditValues, concept: e.target.value})} />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Categoría</Label>
+                        <Select value={editCreditValues.categoryId} onValueChange={v => setEditCreditValues({...editCreditValues, categoryId: v})}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {categories.map(cat => (
+                              <SelectItem key={cat.id} value={cat.id}>
+                                <div className="flex items-center gap-2">
+                                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: cat.color }} />
+                                  {cat.name}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => saveCreditEdit(expense.id)}><Check className="h-4 w-4 mr-1" />Guardar</Button>
+                        <Button size="sm" variant="outline" onClick={cancelCreditEdit}><X className="h-4 w-4 mr-1" />Cancelar</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="p-1.5 rounded-lg bg-purple-100"><CreditCard className="h-4 w-4 text-purple-600" /></div>
+                        <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: getCategoryColor(expense.categoryId) }} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate">{expense.concept}</p>
+                            <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-primary/10 text-primary flex-shrink-0">Cuota {expense.currentInstallment}/{expense.installments}</span>
+                            {expense.detail && (
+                              <Tooltip>
+                                <TooltipTrigger asChild><Info className="h-3.5 w-3.5 text-muted-foreground cursor-help flex-shrink-0" /></TooltipTrigger>
+                                <TooltipContent className="max-w-xs"><p>{expense.detail}</p></TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">{formatDateDisplay(expense.date)} | {getCategoryName(expense.categoryId)} | {getCardLabel(expense.cardType)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                        <span className="font-semibold">${formatARS(expense.installmentAmount)}</span>
+                        {onUpdateCredit && (
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startCreditEdit(expense)}><Pencil className="h-4 w-4" /></Button>
+                        )}
+                        {onDeleteCredit && (
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDeleteCredit(expense.id)}><Trash2 className="h-4 w-4" /></Button>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground">{formatDateDisplay(expense.date)} | {getCategoryName(expense.categoryId)} | {getCardLabel(expense.cardType)}</p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                    <span className="font-semibold">${formatARS(expense.installmentAmount)}</span>
-                    {onDeleteCredit && (
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDeleteCredit(expense.id)}><Trash2 className="h-4 w-4" /></Button>
-                    )}
-                  </div>
+                  )}
                 </div>
               ))}
             </TooltipProvider>
