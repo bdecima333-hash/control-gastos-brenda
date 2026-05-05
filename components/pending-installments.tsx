@@ -62,8 +62,13 @@ export function PendingInstallments({ creditExpenses, categories }: PendingInsta
       const entry = map.get(groupKey)!
       entry.remainingCount++
       entry.totalRemaining += exp.installmentAmount
-      // track earliest (current) installment
+      // track earliest future installment
       if (exp.currentInstallment < entry.currentInstallment) {
+        entry.currentInstallment = exp.currentInstallment
+        entry.nextDate = exp.date
+      }
+      // if this is the current month, prioritize it
+      if (year === currentYear && month === currentMonth) {
         entry.currentInstallment = exp.currentInstallment
         entry.nextDate = exp.date
       }
