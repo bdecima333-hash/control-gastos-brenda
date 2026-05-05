@@ -65,7 +65,8 @@ export function CreditExpenseForm({ categories, onSubmit }: CreditExpenseFormPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!categoryId || !concept || !installments || !installmentAmount || !cardType) return
+    console.log('submit', {categoryId, concept, installments, installmentAmount, cardType, currentInstallment})
+    if (!categoryId || !concept || !installments || !installmentAmount || !cardType) { console.log('validation failed'); return }
 
     const inst = parseInt(installments)
     const amount = parseFloat(installmentAmount)
