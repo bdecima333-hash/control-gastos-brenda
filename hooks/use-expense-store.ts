@@ -153,19 +153,26 @@ export function useExpenseStore() {
       newExpenses.push(exp)
       rows.push({
         id, date: dateStr, category_id: expense.categoryId, concept: expense.concept,
-        detail: expense.detail, installments: expense.installments, current_installment: i + 1,
+        detail: expense.detail, installments: expense.installments, current_installment: startInstallment + i + 1,
         installment_amount: expense.installmentAmount, total_cost: expense.totalCost,
         card_type: expense.cardType, parent_id: i === 0 ? null : parentId,
         is_last_installment: startInstallment + i + 1 === expense.installments, amount: expense.installmentAmount
       })
     }
 
-    await supabase.from('credit_expenses').insert(rows)
+    const { error } = await supabase.from('credit_expenses').insert(rows)
+    if (error) { console.error('credit insert error:', error); return }
     setCreditExpenses(prev => [...prev, ...newExpenses])
   }
 
   const updateCreditExpense = async (id: string, updates: Partial<Omit<CreditExpense, 'id'>>) => {
-    await supabase.from('credit_expenses').update(updates).eq('id', id)
+    const dbUpdates: Record<string, unknown> = {}
+    if (updates.concept !== undefined) dbUpdates.concept = updates.concept
+    if (updates.categoryId !== undefined) dbUpdates.category_id = updates.categoryId
+    if (updates.date !== undefined) dbUpdates.date = updates.date
+    if (updates.installmentAmount !== undefined) dbUpdates.installment_amount = updates.installmentAmount
+    if (updates.cardType !== undefined) dbUpdates.card_type = updates.cardType
+    await supabase.from('credit_expenses').update(dbUpdates).eq('id', id)
     setCreditExpenses(prev => prev.map(exp => exp.id === id ? { ...exp, ...updates } : exp))
   }
 
