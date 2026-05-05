@@ -36,7 +36,7 @@ const formatARS = (v: number) => v.toLocaleString('es-AR', { minimumFractionDigi
 
 export function ExpenseList({
   cashExpenses, creditExpenses = [], categories,
-  onDeleteCash, onDeleteCredit, onUpdateCash, showCredit = false, title,
+  onDeleteCash, onDeleteCredit, onUpdateCash, onUpdateCredit, showCredit = false, title,
 }: ExpenseListProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{ date: string; concept: string; total: string; categoryId: string; paymentType: 'efectivo' | 'debito' } | null>(null)
